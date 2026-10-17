@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>لجنة توزيع الوقود · إدارة التعبئة</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#F1F4F9;--card:#fff;--ink:#0B1F3A;--mut:#5B6F8A;--line:#DCE3EE;--pri:#12366B;--onpri:#fff;--acc:#F5A400;--ok:#1E9E5A;--okbg:#E0F4E8;--bad:#D6403A;--badbg:#FBE5E3;--warn:#B97800;--warnbg:#FFF1D1;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0A1626;--card:#10253F;--ink:#EAF1FA;--mut:#8FA6C4;--line:#233E60;--pri:#F5A400;--onpri:#0B1F3A;--okbg:#123A27;--badbg:#42191A;--warnbg:#41330C;--warn:#F5C04A}}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:'Cairo',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+#app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+header{background:var(--pri);color:var(--onpri);padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:4px solid var(--acc)}
+header h1{font-size:18px;font-weight:700}header small{opacity:.8;display:block;font-size:12px}
+main{flex:1;padding:16px 16px 90px}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:700;background:var(--pri);color:var(--onpri)}
+button.sec{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+button.acc{background:var(--acc);color:#0E2A2F}
+button.sm{padding:6px 12px;font-size:13px;border-radius:9px}
+button.del{background:var(--badbg);color:var(--bad)}
+button.full{width:100%}
+header button{background:rgba(255,255,255,.14);color:inherit;padding:6px 12px;font-size:13px}
+input,select{font:inherit;width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
+input:focus,select:focus,button:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+label{display:block;font-size:13px;color:var(--mut);margin:12px 0 4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.plate{font-weight:700;font-size:17px;letter-spacing:.5px;direction:ltr;display:inline-block;background:#fff;color:#111;border:2px solid #111;border-radius:7px;padding:1px 10px}
+.mut{color:var(--mut);font-size:13px}
+.tabs{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:auto;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs button{flex:1;background:none;color:var(--mut);border-radius:0;padding:12px 4px;font-size:12px}
+.tabs button.on{color:var(--ink);box-shadow:inset 0 3px 0 var(--acc)}
+.login{min-height:100vh;display:flex;flex-direction:column}
+.hero{position:relative;overflow:hidden;background:linear-gradient(155deg,#1D5BA8 0%,#12366B 55%,#0B2548 100%);color:#fff;padding:64px 28px 80px;border-radius:0 0 40px 40px}
+.hero::after{content:"";position:absolute;width:280px;height:280px;border-radius:50%;left:-100px;top:-80px;background:radial-gradient(circle,rgba(245,164,0,.38),transparent 70%)}
+.hero>*{position:relative;z-index:1}
+.lform{background:var(--card);margin:-40px 16px 24px;padding:20px;border-radius:24px;box-shadow:0 14px 34px rgba(14,42,47,.16);position:relative}
+.pw{position:relative}.pw input{padding-left:48px}.pw button{position:absolute;left:6px;top:50%;transform:translateY(-50%);background:none;color:var(--mut);padding:8px;border-radius:10px;display:grid;place-items:center}
+.logo{width:132px;height:132px;border-radius:38px;background:linear-gradient(145deg,#FFC247,#F5A400);display:grid;place-items:center;box-shadow:0 18px 40px rgba(0,0,0,.35);margin-bottom:22px}
+.hero h2{font-size:34px;line-height:1.4;font-weight:700}
+.seg{display:flex;background:var(--line);border-radius:12px;padding:4px;margin:18px 0 6px}
+.seg button{flex:1;background:none;color:var(--mut);padding:9px}
+.seg button.on{background:var(--card);color:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.stats b{display:block;font-size:22px}
+.display{border-radius:20px;padding:22px 18px;text-align:center;margin:14px 0}
+.display.ok{background:var(--okbg);color:var(--ok)}.display.bad{background:var(--badbg);color:var(--bad)}.display.warn{background:var(--warnbg);color:var(--warn)}
+.display .big{font-size:28px;font-weight:700;line-height:1.3}
+.display p{color:var(--ink);font-size:14px;margin-top:6px}
+#cam{width:100%;border-radius:16px;background:#000;max-height:260px;object-fit:cover}
+.tag{font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--okbg);color:var(--ok)}
+.tag.bad{background:var(--badbg);color:var(--bad)}
+header{background:linear-gradient(135deg,#1D5BA8,#12366B);color:#fff}
+.card{box-shadow:0 2px 12px rgba(14,42,47,.07)}
+.display{box-shadow:0 8px 24px rgba(14,42,47,.1)}.display .big{font-size:30px}
+.plate{box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.chips{display:flex;gap:8px;margin-bottom:12px}.chip{padding:5px 14px;font-size:13px;border-radius:9px;background:var(--line);color:var(--mut)}.chip.on{background:var(--pri);color:var(--onpri)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:grid;place-items:center;padding:20px;z-index:20}
+.modal .card{max-width:340px;width:100%;text-align:center;margin:0}
+#qrbox{display:grid;place-items:center;background:#fff;padding:14px;border-radius:12px;margin:12px 0}
+@media print{#app,.toast{display:none}.modal{position:static;background:none;padding:0}.modal .card{box-shadow:none;border:0;max-width:none}.modal .row{display:none}}
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;z-index:30;font-size:14px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const SB=supabase.createClient('https://bwomqprjwyaqvzgdjnqa.supabase.co','sb_publishable_vjkCP7u-z7v_A9J0T2ggXg_xrAqdwzj');
+const GAP=4*86400000;
+const S={user:null,tab:'v',res:null,scan:false,logF:'a'};
+let db={stations:[],vehicles:[],workers:[],fills:[]},recent=[];
+const $=s=>document.querySelector(s);
+const norm=p=>String(p||'').replace(/[\s-]/g,'').toUpperCase();
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const stName=id=>(db.stations.find(s=>s.id==id)||{}).name||'—';
+const fmt=t=>new Date(t).toLocaleString('ar-SA',{dateStyle:'medium',timeStyle:'short'});
+const lastFill=p=>db.fills.filter(f=>f.plate==p).sort((a,b)=>b.ts-a.ts)[0];
+const ERR={username_taken:'اسم المستخدم مستخدم',invalid_username:'اسم المستخدم: ٣ إلى ٣٠ حرفاً إنجليزياً صغيراً أو أرقاماً',password_too_short:'كلمة المرور ٦ أحرف على الأقل',invalid_station:'المحطة غير صالحة',name_required:'الاسم مطلوب',forbidden:'غير مصرح'};
+function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.append(d);setTimeout(()=>d.remove(),2600)}
+const EYE=o=>'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(o?'<path d="M17.9 17.9A10.7 10.7 0 0112 19C5.5 19 2 12 2 12a18 18 0 015.1-5.9M9.9 5.1A9.7 9.7 0 0112 5c6.5 0 10 7 10 7a18 18 0 01-2.2 3.2M1 1l22 22"/>':'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>')+'</svg>';
+const PUMP='<svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#12366B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 012-2h6a2 2 0 012 2v16M3 21h12M14 9h2a2 2 0 012 2v5a1.5 1.5 0 003 0V8l-3-3M6 8h6"/></svg>';
+const eyeBind=(i,b)=>{$(b).onclick=()=>{const p=$(i),s=p.type=='password';p.type=s?'text':'password';$(b).innerHTML=EYE(s)}};
+const confirmOnce=b=>{if(b.dataset.arm)return true;b.dataset.arm=1;b.textContent='تأكيد؟';setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;b.textContent='حذف'}},3000);return false};
+async function fn(body){const {data,error}=await SB.functions.invoke('manage-supervisors',{body});if(error){let m=error.message;try{m=(await error.context.json()).error}catch(e){}throw new Error(ERR[m]||m)}return data}
+
+/* ---------- data ---------- */
+async function load(){
+ const st=await SB.from('stations').select('id,name').eq('is_active',true).order('id');db.stations=st.data||[];
+ if(S.user.role!='admin')return;
+ const [v,w,f]=await Promise.all([
+  SB.from('vehicles').select('id,plate,owner').eq('is_active',true).order('id',{ascending:false}),
+  SB.from('profiles').select('id,username,full_name,station_id').eq('role','supervisor').eq('is_active',true).order('created_at'),
+  SB.from('fills').select('filled_at,station_id,vehicles(plate),profiles(full_name)').order('filled_at',{ascending:false}).limit(500)]);
+ db.vehicles=v.data||[];
+ db.workers=(w.data||[]).map(x=>({id:x.id,name:x.full_name,user:x.username,station:x.station_id}));
+ db.fills=(f.data||[]).map(x=>({plate:x.vehicles&&x.vehicles.plate,station:x.station_id,ts:+new Date(x.filled_at),worker:x.profiles&&x.profiles.full_name}));
+}
+async function enter(uid){
+ const {data:pr}=await SB.from('profiles').select('full_name,role,station_id,is_active').eq('id',uid).maybeSingle();
+ if(!pr||!pr.is_active){await SB.auth.signOut();return false}
+ S.user={role:pr.role,name:pr.full_name,station:pr.station_id};S.tab='v';S.res=null;recent=[];
+ await load();render();return true;
+}
+async function login(u,p){
+ if(!u||!p)return toast('أدخل اسم المستخدم وكلمة المرور');
+ const {data,error}=await SB.auth.signInWithPassword({email:u.toLowerCase()+'@fuel.local',password:p});
+ if(error)return toast('بيانات الدخول غير صحيحة');
+ if(!(await enter(data.user.id)))toast('الحساب غير مفعّل');
+}
+const mapRes=(d,p)=>d.status=='unregistered'?{t:'none',p}:d.status=='blocked'?{t:'no',p,l:{sn:d.last_station,ts:+new Date(d.last_fill),next:+new Date(d.next_eligible)}}:{t:'ok',p,v:{owner:d.owner},l:d.last_fill?{sn:d.last_station,ts:+new Date(d.last_fill)}:null};
+async function verify(raw){const p=norm(raw);if(!p)return toast('أدخل رقم اللوحة');
+ const {data,error}=await SB.rpc('check_vehicle',{p_plate:p});if(error)return toast('تعذر الفحص، حاول مرة أخرى');
+ S.res=mapRes(data,p);render()}
+async function confirmFill(){const p=S.res.p;
+ const {data,error}=await SB.rpc('record_fill',{p_plate:p});if(error)return toast('تعذر التسجيل، حاول مرة أخرى');
+ if(data.status=='recorded'){recent.unshift({plate:p,ts:Date.now()});S.res={t:'done',p}}else S.res=mapRes(data,p);render()}
+
+/* ---------- render ---------- */
+function render(){
+ const A=$('#app');
+ if(!S.user){A.innerHTML=`<div class="login"><div class="hero"><div class="logo">${PUMP}</div><h2>لجنة توزيع الوقود</h2></div><div class="lform"><label style="margin-top:0">اسم المستخدم</label><input id="u" autocomplete="username" autocapitalize="none" style="direction:ltr;text-align:right"><label>كلمة المرور</label><div class="pw"><input id="p" type="password" autocomplete="current-password"><button type="button" id="eye" aria-label="إظهار كلمة المرور">${EYE(0)}</button></div><button class="acc full" id="go" style="margin-top:20px">تسجيل الدخول</button></div></div>`;
+  eyeBind('#p','#eye');
+  const go=async()=>{const b=$('#go');b.disabled=true;await login($('#u').value.trim(),$('#p').value);const g=$('#go');if(g)g.disabled=false};
+  $('#go').onclick=go;$('#p').onkeydown=e=>{if(e.key=='Enter')go()};return}
+ const adm=S.user.role=='admin';
+ const body=adm?(S.tab=='v'?vehiclesV():S.tab=='s'?stationsV():S.tab=='w'?workersV():logV()):workerV();
+ A.innerHTML=`<header><div><h1>${adm?'لوحة المشرف':esc(stName(S.user.station))}</h1><small>${esc(S.user.name)}</small></div><button id="out">خروج</button></header><main>${body}</main>${adm?`<nav class="tabs">${[['v','المركبات'],['s','المحطات'],['w','المشرفون'],['l','السجل']].map(t=>`<button data-t="${t[0]}" class="${S.tab==t[0]?'on':''}">${t[1]}</button>`).join('')}</nav>`:''}`;
+ $('#out').onclick=async()=>{stopCam();await SB.auth.signOut();S.user=null;render()};
+ A.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.tab=b.dataset.t;render()});
+ (adm?bindAdmin:bindWorker)();
+}
+function vehiclesV(){const today=db.fills.filter(f=>Date.now()-f.ts<86400000).length;
+ return `<div class="stats"><div><b>${today}</b><span class="mut">تعبئة اليوم</span></div><div><b>${db.stations.length}</b><span class="mut">محطة</span></div><div><b>${db.vehicles.length}</b><span class="mut">مركبة</span></div></div>
+ <div class="card"><label style="margin-top:0">رقم اللوحة</label><input id="vp" placeholder="مثال: ABC1234" style="direction:ltr;text-align:right"><label>اسم المالك أو الجهة</label><input id="vo"><button class="acc full" id="addv" style="margin-top:14px">إضافة مركبة</button></div>
+ ${db.vehicles.length?db.vehicles.map(v=>{const l=lastFill(v.plate);return `<div class="card"><div class="row"><span class="plate">${esc(v.plate)}</span><div><button class="sm sec" data-qr="${esc(v.plate)}">QR</button> <button class="sm del" data-dv="${v.id}">حذف</button></div></div><p class="mut" style="margin-top:6px">${esc(v.owner||'—')}${l?` · آخر تعبئة: ${esc(stName(l.station))}، ${fmt(l.ts)}`:' · لم تُعبّأ بعد'}</p></div>`}).join(''):'<p class="mut">لا توجد مركبات. أضف أول مركبة من النموذج أعلاه.</p>'}`}
+function stationsV(){return `<div class="card"><label style="margin-top:0">اسم المحطة</label><input id="sn"><button class="acc full" id="adds" style="margin-top:14px">إضافة محطة</button></div>
+ ${db.stations.map(s=>`<div class="card row"><div><b>${esc(s.name)}</b><p class="mut">${db.workers.filter(w=>w.station==s.id).length} مشرف · ${db.fills.filter(f=>f.station==s.id&&Date.now()-f.ts<86400000).length} تعبئة اليوم</p></div><button class="sm del" data-ds="${s.id}">حذف</button></div>`).join('')||'<p class="mut">أضف محطة لتبدأ.</p>'}`}
+function workersV(){return `<div class="card"><label style="margin-top:0">اسم مشرف المحطة</label><input id="wn"><label>اسم المستخدم (إنجليزي)</label><input id="wu" autocapitalize="none" style="direction:ltr;text-align:right"><label>كلمة المرور</label><div class="pw"><input id="wp" type="password" autocomplete="new-password"><button type="button" id="weye" aria-label="إظهار كلمة المرور">${EYE(0)}</button></div><label>المحطة التابع لها</label><select id="ws">${db.stations.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select><button class="acc full" id="addw" style="margin-top:14px">إضافة مشرف محطة</button></div>
+ ${db.workers.map(w=>`<div class="card row"><div><b>${esc(w.name)}</b><p class="mut">${esc(stName(w.station))} · ${esc(w.user)}</p></div><button class="sm sec" data-ew="${w.id}">إدارة</button></div>`).join('')}`}
+function logV(){const lim={d:86400000,w:604800000}[S.logF];const f=db.fills.filter(x=>!lim||Date.now()-x.ts<lim).sort((a,b)=>b.ts-a.ts);
+ const chips=`<div class="chips">${[['d','اليوم'],['w','٧ أيام'],['a','الكل']].map(c=>`<button class="chip ${S.logF==c[0]?'on':''}" data-lf="${c[0]}">${c[1]}</button>`).join('')}</div>`;
+ return chips+(f.length?f.map(x=>`<div class="card"><div class="row"><span class="plate">${esc(x.plate)}</span><span class="tag">${esc(stName(x.station))}</span></div><p class="mut" style="margin-top:6px">${fmt(x.ts)} · المشرف: ${esc(x.worker||'—')}</p></div>`).join(''):'<p class="mut">لا توجد عمليات تعبئة في هذه الفترة.</p>')}
+function workerV(){return `<div class="card">${S.scan?'<video id="cam" playsinline muted></video><button class="sec full sm" id="stop" style="margin-top:10px">إيقاف الكاميرا</button>':'<button class="acc full" id="scan">مسح رمز QR بالكاميرا</button>'}<label>أو أدخل رقم اللوحة</label><div class="row"><input id="pl" placeholder="ABC1234" style="direction:ltr;text-align:right"><button id="chk">تحقق</button></div></div>${resV()}
+ <h3 style="margin:18px 0 8px;font-size:15px">تعبئاتك في هذه الجلسة</h3>${recent.slice(0,6).map(x=>`<div class="card row"><span class="plate">${esc(x.plate)}</span><span class="mut">${fmt(x.ts)}</span></div>`).join('')||'<p class="mut">لا توجد تعبئات بعد.</p>'}`}
+function resV(){const r=S.res;if(!r)return '';
+ const plate=`<div style="text-align:center;margin:14px 0 0"><span class="plate" style="font-size:30px;padding:2px 16px">${esc(r.p)}</span></div>`;
+ const again='<button class="acc full" id="again" style="margin-top:12px">فحص مركبة جديدة</button>';
+ if(r.t=='none')return plate+`<div class="display bad"><div class="big">غير مسجلة</div><p>اللوحة غير موجودة في النظام. لا تُعبّأ المركبة.</p></div>`+again;
+ if(r.t=='no')return plate+`<div class="display bad"><div class="big">غير مسموح بالتعبئة</div><p>عُبّئت من <b>${esc(r.l.sn)}</b><br>بتاريخ ${fmt(r.l.ts)}<br>التعبئة القادمة: ${fmt(r.l.next)}</p></div>`+again;
+ if(r.t=='done')return plate+`<div class="display ok"><div class="big">تمت التعبئة</div><p>سُجلت في ${esc(stName(S.user.station))}</p></div>`+again;
+ return plate+`<div class="display ok"><div class="big">مسموح بالتعبئة</div><p>${esc(r.v.owner||'')}<br>${r.l?`آخر تعبئة: ${esc(r.l.sn)}، ${fmt(r.l.ts)}`:'أول تعبئة للمركبة'}</p></div><button class="full acc" id="conf">تأكيد التعبئة في محطتي</button>`}
+
+/* ---------- bindings ---------- */
+const on=(s,f)=>{const e=$(s);if(e)e.onclick=f};
+function bindWorker(){
+ on('#chk',()=>verify($('#pl').value));on('#scan',startCam);on('#stop',()=>{stopCam();render()});
+ on('#again',()=>{S.res=null;render();const i=$('#pl');if(i)i.focus()});on('#conf',confirmFill);
+ const pl=$('#pl');if(pl)pl.onkeydown=e=>{if(e.key=='Enter')verify(pl.value)};
+ if(S.scan&&stream){const c=$('#cam');if(c){c.srcObject=stream;c.play()}}
+}
+function bindAdmin(){
+ document.querySelectorAll('[data-lf]').forEach(b=>b.onclick=()=>{S.logF=b.dataset.lf;render()});
+ if($('#weye'))eyeBind('#wp','#weye');
+ on('#addv',async()=>{const p=norm($('#vp').value);if(!p)return toast('أدخل رقم اللوحة');
+  const {error}=await SB.from('vehicles').insert({plate:p,owner:$('#vo').value.trim()||null});
+  if(error)return toast(error.code=='23505'?'اللوحة مسجلة مسبقاً':'تعذرت الإضافة');
+  await load();render();toast('تمت إضافة المركبة');showQR(p)});
+ on('#adds',async()=>{const n=$('#sn').value.trim();if(!n)return toast('أدخل اسم المحطة');
+  const {error}=await SB.from('stations').insert({name:n});if(error)return toast(error.code=='23505'?'اسم المحطة مستخدم':'تعذرت الإضافة');await load();render()});
+ on('#addw',async()=>{const b=$('#addw');b.disabled=true;
+  try{await fn({action:'create',username:$('#wu').value,full_name:$('#wn').value,password:$('#wp').value,station_id:+$('#ws').value});await load();render();toast('تمت إضافة المشرف')}
+  catch(e){toast(e.message);b.disabled=false}});
+ document.querySelectorAll('[data-dv]').forEach(b=>b.onclick=async()=>{if(!confirmOnce(b))return;await SB.from('vehicles').update({is_active:false}).eq('id',b.dataset.dv);await load();render()});
+ document.querySelectorAll('[data-ds]').forEach(b=>b.onclick=async()=>{if(!confirmOnce(b))return;await SB.from('stations').update({is_active:false}).eq('id',b.dataset.ds);await load();render()});
+ document.querySelectorAll('[data-ew]').forEach(b=>b.onclick=()=>editW(b.dataset.ew));
+ document.querySelectorAll('[data-qr]').forEach(b=>b.onclick=()=>showQR(b.dataset.qr));
+}
+function showQR(p){const m=document.createElement('div');m.className='modal';
+ m.innerHTML=`<div class="card"><span class="plate">${esc(p)}</span><div id="qrbox"></div><p class="mut">تم إصدار الرمز، اطبعه وألصقه على المركبة</p><div class="row" style="gap:8px;margin-top:12px"><button class="acc" id="prn" style="flex:1">طباعة QR</button><button class="sec" id="cls" style="flex:1">إغلاق</button></div></div>`;
+ document.body.append(m);new QRCode($('#qrbox'),{text:p,width:200,height:200});
+ m.querySelector('#cls').onclick=()=>m.remove();m.querySelector('#prn').onclick=()=>window.print()}
+function editW(id){const w=db.workers.find(x=>x.id==id);if(!w)return;
+ const m=document.createElement('div');m.className='modal';m.style.overflowY='auto';
+ m.innerHTML=`<div class="card" style="text-align:right"><h3 style="font-size:17px">إدارة مشرف المحطة</h3><label>الاسم</label><input id="en" value="${esc(w.name)}"><label>اسم المستخدم</label><input id="eu" value="${esc(w.user)}" style="direction:ltr;text-align:right"><label>كلمة مرور جديدة (اتركها فارغة للإبقاء)</label><div class="pw"><input id="ep" type="password" autocomplete="new-password"><button type="button" id="eeye" aria-label="إظهار كلمة المرور">${EYE(0)}</button></div><label>المحطة التابع لها</label><select id="es">${db.stations.map(s=>`<option value="${s.id}" ${s.id==w.station?'selected':''}>${esc(s.name)}</option>`).join('')}</select><div class="row" style="gap:8px;margin-top:16px"><button class="acc" id="esv" style="flex:1">حفظ</button><button class="sec" id="ecl" style="flex:1">إلغاء</button></div><button class="del full" id="edl" style="margin-top:8px">حذف المشرف</button></div>`;
+ document.body.append(m);const g=s=>m.querySelector(s);eyeBind('#ep','#eeye');g('#ecl').onclick=()=>m.remove();
+ g('#esv').onclick=async()=>{const b=g('#esv');b.disabled=true;
+  try{await fn({action:'update',id:w.id,full_name:g('#en').value,username:g('#eu').value,station_id:+g('#es').value,...(g('#ep').value?{password:g('#ep').value}:{})});m.remove();await load();render();toast('تم حفظ التعديلات')}
+  catch(e){toast(e.message);b.disabled=false}};
+ let armed=false;g('#edl').onclick=async e=>{if(!armed){armed=true;e.target.textContent='اضغط مرة أخرى لتأكيد الحذف';return}
+  try{await fn({action:'delete',id:w.id});m.remove();await load();render();toast('تم حذف المشرف')}catch(x){toast(x.message)}};
+}
+
+/* ---------- camera ---------- */
+let stream=null,timer=null;
+function stopCam(){clearInterval(timer);if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}S.scan=false}
+async function startCam(){
+ if(!('BarcodeDetector' in window)||!navigator.mediaDevices)return toast('الكاميرا غير مدعومة، أدخل رقم اللوحة');
+ try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})}catch(e){return toast('تعذر فتح الكاميرا، تحقق من الصلاحيات')}
+ S.scan=true;S.res=null;render();const det=new BarcodeDetector({formats:['qr_code']});
+ timer=setInterval(async()=>{const c=$('#cam');if(!c||c.readyState<2)return;try{const r=await det.detect(c);if(r.length){const v=r[0].rawValue;stopCam();verify(v)}}catch(e){}},400)}
+
+/* ---------- start ---------- */
+render();
+SB.auth.getSession().then(async({data})=>{if(data.session&&!S.user)await enter(data.session.user.id)});
+</script>
+</body>
+</html>
